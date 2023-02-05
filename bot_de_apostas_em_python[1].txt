@@ -1,0 +1,228 @@
+ import re
+import numpy as np
+from bs4 import BeautifulSoup
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.model_selection import train_test_split, cross_val_score
+import pickle
+
+# Função para extrair as informações de odds de uma URL específica
+def get_betting_odds(url):
+    """
+    Faz uma requisição da página de odds esportivos e retorna as informações extraídas usando o BeautifulSoup
+    :param url: URL da página de odds esportivos
+    :return: lista de dicionários com as informações de odds
+    """
+    try:
+        # Realiza a requisição da página
+        page = requests.get(url)
+    except requests.exceptions.RequestException as e:
+        # Lança uma exceção em caso de erro na requisição
+        raise Exception(f"Erro ao obter a página: {e}")
+    
+    # Processa o conteúdo da página com o BeautifulSoup
+    soup = BeautifulSoup(page.content, "html.parser")
+    results = soup.find_all("div", class_="aposta")
+
+    odds = []
+    for result in results:
+        odds.append(result.text)
+    
+    return odds
+
+# Função para processar as informações de odds e transformá-las em um formato de dados útil para análise
+def process_betting_odds(odds):
+    """
+    Processa as informações de odds e as transforma em um formato de dados útil para análise
+    :param odds: lista de informações de odds brutas
+    :return: lista de dicionários com as informações de odds processadas
+    """
+    data = []
+    for odd in odds:
+        try:
+            # Verifica se o formato das informações de odds é o esperado
+            event, team1, team2, odd1, odd2 = re.findall(r'(\w+)\s+(\w+)\s+vs\s+(\w+)\s+(\d+\.\d+)\s+(\d+\.\d+)', odd)
+        except:
+            # Lança uma exceção em caso de formato inválido
+            raise Exception(f"Formato inválido de odds encontrado: {odd}")
+        
+        data.append({'event': event, 'team1': team1, 'team2': team2, 'odd1': float(odd1), 'odd2': float(odd2),
+                     'performance_team1': 0.5, 'performance_team2': 0.5,
+ Divisão dos dados em conjuntos de treinamento e teste
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+Criação dos classificadores
+tree = DecisionTreeClassifier()
+forest = RandomForestClassifier()
+regression = LogisticRegression()
+
+Treinamento dos modelos com os dados de treinamento
+tree.fit(X_train, y_train)
+forest.fit(X_train, y_train)
+regression.fit(X_train, y_train)
+
+Avaliação dos modelos com os dados de teste
+tree_accuracy = accuracy_score(y_test, tree.predict(X_test))
+tree_precision = precision_score(y_test, tree.predict(X_test))
+tree_recall = recall_score(y_test, tree.predict(X_test))
+tree_f1 = f1_score(y_test, tree.predict(X_test))
+
+forest_accuracy = accuracy_score(y_test, forest.predict(X_test))
+forest_precision = precision_score(y_test, forest.predict(X_test))
+forest_recall = recall_score(y_test, forest.predict(X_test))
+forest_f1 = f1_score(y_test, forest.predict(X_test))
+
+regression_accuracy = accuracy_score(y_test, regression.predict(X_test))
+regression_precision = precision_score(y_test, regression.predict(X_test))
+regression_recall = recall_score(y_test, regression.predict(X_test))
+regression_f1 = f1_score(y_test, regression.predict(X_test))
+
+Validação cruzada dos modelos
+tree_cross_val = cross_val_score(tree, X, y, cv=5).mean()
+forest_cross_val = cross_val_score(forest, X, y, cv=5).mean()
+regression_cross_val = cross_val_score(regression, X, y, cv=5).mean()
+
+Armazenamento dos modelos
+with open('tree.pkl', 'wb') as file:
+pickle.dump(tree, file)
+
+with open('forest.pkl', 'wb') as file:
+pickle.dump(forest, file)
+
+with open('regression.pkl', 'wb') as file:
+pickle.dump(regression, file)
+
+Impressão dos resultados de avaliação
+print(f"Resultados da árvore de decisão:")
+print(f"Acurácia: {tree_accuracy:.2f}")
+print(f"Precisão: {tree_precision:.2f}")
+print(f"Revocação: {tree_recall:.2f}")
+print(f"F1-score: {tree_f1:.2f}")
+print(f"Validação cruzada: {tree_cross_val:.2f}")
+
+print(f"Resultados da floresta aleatória:")
+print(f"Acurácia: {forest_accuracy:.2f}")
+print(f"Precisão: {forest_precision:.2f}")
+print(f"Revocação: {forest_recall:.2f}")
+print(f"F1-score: {forest_f1:.2f}")
+print(f"Validação cruzada: {forest_cross_val:.2f}")
+
+print(f"Resultados da regressão logística:")
+print(f"Acurácia: {regression_accuracy:.2f}")
+print(f"Precisão: {regression_precision:.2f}")
+print(f"Revocação: {regression_recall:.2f}")
+print(f"F1-score: {regression_f1:.2f}")
+print(f"Validação cruzada: {regression_cross_val:.2f}") Função para extrair as informações de odds de uma URL específica
+def get_betting_odds(url):
+"""
+Faz uma requisição da página de odds esportivos e retorna as informações extraídas usando o BeautifulSoup
+:param url: URL da página de odds esportivos
+:return: lista de dicionários com as informações de odds
+"""
+try:
+# Realiza a requisição da página
+page = requests.get(url)
+except requests.exceptions.RequestException as e:
+# Lança uma exceção em caso de erro na requisição
+raise Exception(f"Erro ao obter a página: {e}")  # Processa o conteúdo da página com o BeautifulSoup
+soup = BeautifulSoup(page.content, "html.parser")
+results = soup.find_all("div", class_="aposta")
+
+odds = []
+for result in results:
+    odds.append(result.text)
+
+return odds
+Função para processar as informações de odds e transformá-las em um formato de dados útil para análise
+def process_betting_odds(odds):
+"""
+Processa as informações de odds e as transforma em um formato de dados útil para análise
+:param odds: lista de informações de odds brutas
+:return: lista de dicionários com as informações de odds processadas
+"""
+data = []
+for odd in odds:
+try:
+# Verifica se o formato das informações de odds é o esperado
+event, team1, team2, odd1, odd2 = re.findall(r'(\w+)\s+(\w+)\s+vs\s+(\w+)\s+(\d+.\d+)\s+(\d+.\d+)', odd)
+except:
+# Lança uma exceção em caso de formato inválido
+raise Exception(f"Formato inválido de odds encontrado: {odd}")     data.append({'event': event, 'team1': team1, 'team2': team2, 'odd1': float(odd1), 'odd2': float(odd2),
+                 'performance_team1': 0.5, 'performance_team2': 0.5})
+return data def train_and_evaluate_models(X_train, X_test, y_train, y_test):
+    """
+    Função para treinar e avaliar os modelos
+    :param X_train: dados de treinamento
+    :param X_test: dados de teste
+    :param y_train: rótulos de treinamento
+    :param y_test: rótulos de teste
+    :return: dicionário com as métricas de avaliação para cada modelo
+    """
+    # Criação dos classificadores
+    tree = DecisionTreeClassifier()
+    forest = RandomForestClassifier()
+    regression = LogisticRegression()
+    
+    # Treinamento dos modelos com os dados de treinamento
+    tree.fit(X_train, y_train)
+    forest.fit(X_train, y_train)
+    regression.fit(X_train, y_train)
+    
+    # Avaliação dos modelos com os dados de teste
+    tree_accuracy = accuracy_score(y_test, tree.predict(X_test))
+    tree_precision = precision_score(y_test, tree.predict(X_test))
+    tree_recall = recall_score(y_test, tree.predict(X_test))
+    tree_f1 = f1_score(y_test, tree.predict(X_test))
+    
+    forest_accuracy = accuracy_score(y_test, forest.predict(X_test))
+    forest_precision = precision_score(y_test, forest.predict(X_test))
+    forest_recall = recall_score(y_test, forest.predict(X_test))
+    forest_f1 = f1_score(y_test, forest.predict(X_test))
+    
+    regression_accuracy = accuracy_score(y_test, regression.predict(X_test))
+    regression_precision = precision_score(y_test, regression.predict(X_test))
+    regression_recall = recall_score(y_test, regression.predict(X_test))
+    regression_f1 = f1_score(y_test, regression.predict(X_test))
+    
+    # Armazenamento das métricas de avaliação em um dicionário
+    metrics = {
+        'tree': {'accuracy': tree_accuracy, 'precision': tree_precision, 'recall': tree_recall, 'f1': tree_f1},
+        'forest': {'accuracy': forest_accuracy, 'precision': forest_precision, 'recall': forest_recall, 'f1': forest_f1},
+        'regression': {'accuracy': regression_accuracy, 'precision': regression_precision, 'recall': regression_recall, 'f1': regression_f1}
+    }
+    
+    return metrics # Carregar os dados
+data = pd.read_csv("meus_dados.csv")
+
+# Definir a variável alvo "y"
+y = data["coluna_que_representa_a_variavel_alvo"]
+# Separar em dados de treinamento e teste
+X_train, X_test, y_train, y_test = train_test_split(data.drop("coluna_que_representa_a_variavel_alvo", axis=1), y, test_size=0.2, random_state=0)
+# Criar o modelo de Árvore de Decisão
+tree = DecisionTreeClassifier()
+tree.fit(X_train, y_train)
+
+# Criar o modelo de Floresta Aleatória
+forest = RandomForestClassifier()
+forest.fit(X_train, y_train)
+
+# Criar o modelo de Regressão Logística
+logreg = LogisticRegression()
+logreg.fit(X_train, y_train)
+# Prever as classes dos dados de teste para cada modelo
+y_pred_tree = tree.predict(X_test)
+y_pred_forest = forest.predict(X_test)
+y_pred_logreg = logreg.predict(X_test)
+
+# Calcular as medidas de desempenho para cada modelo
+accuracy_tree = accuracy_score(y_test, y_pred_tree)
+precision_tree = precision_score(y_test, y_pred_tree)
+recall_tree = recall_score(y_test, y_pred_tree)
+f1_tree = f1_score(y_test, y_pred_tree)
+
+accuracy_forest = accuracy_score(y_test, y_pred_forest)
+precision_forest = precision_score(y_test, y_pred_forest)
+recall_forest = recall_score(y_test, y_pred_forest)
+f1_forest = f1_score(y_test, y_test, y_prend_forest)
